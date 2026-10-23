@@ -191,7 +191,7 @@ Daily check answers:
 In Java, -7//2 would return -3 as it truncates the output towards 0, and -7%2 would return -1
 2) The "==" checks for the equality of values between the given operands, whereas 'is' keyword checks if the 2 operands point to the same object. 'is' should be used in case of singleton values like 'None'.
 3) For string concatenation, using "+=" repeatedly is not efficient because each time in the loop a new string is created and previous value is allocated and then the new string is created, but using "".join() concatenates them more efficiently.
-4) It will return True, because a non-empty string is a True value if no more evaluation is to be done on it.
+4) It will return True, because a non-empty string is a True value if no more evaluation is to be done on it. A boolean check on string value only if it empty or not, it does not care about its value such as "false" or "0".
 5) a will be [1,2] because b and a both point to the same array object, so a change in b will also reflect in a.
 6) Money values can be in decimal, which when converted internally in computers are stored in binary formats, during which some precision errors can be introduced in the values if stored in float format. In payments system, a single digit error in precision can also cause a lot of trouble. Therefore, we should store it either as an integer format (in cents, a minor unit) or the Decimal module to store its exact decimal representation, this way, no precision errors can be introduced in the values.
 

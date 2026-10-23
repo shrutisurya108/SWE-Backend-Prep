@@ -2,6 +2,7 @@ class Solution:
     def getConcatenation(self, nums: list[int]) -> list[int]:
         # # Approach 1
         # ans = [0]*len(nums)*2
+        #n=len(nums)
         # for i in range(len(nums)):
         #     ans[i]=nums[i]
         #     ans[i+n]=nums[i]
@@ -18,6 +19,5 @@ class Solution:
         # Approach 3
         ans = nums*2
         return ans
-        # Time complexity for approach 2: O(n)
-        # Space complexity for approach 2: O(2n) = O(n)
-        
+        # Time complexity for approach 3: O(n)
+        # Space complexity for approach 3: O(2n) = O(n)

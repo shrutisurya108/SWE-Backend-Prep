@@ -13,8 +13,9 @@ for ch in range(len(st)-1, -1, -1):
 st2="".join(letters_list)
 print(f"st2: {st2}")
 
-if st.lower() == st1.lower():
-    result = True
-else:
-    result = False
+# if st.lower() == st1.lower():
+#     result = True
+# else:
+#     result = False
+result = st.lower == st1.lower()
 print(f"Palindrome check Result: {result}")

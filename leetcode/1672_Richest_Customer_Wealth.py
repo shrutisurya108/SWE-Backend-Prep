@@ -12,14 +12,16 @@ class Solution:
 
 
         # Approach 2
-        richest = 0
-        for customer in accounts:
-            customer_tot = 0
-            for money in customer:
-                customer_tot+=money
-            if customer_tot>richest:
-                richest=customer_tot
-        return richest
+        # richest = 0
+        # for customer in accounts:
+        #     customer_tot = 0
+        #     for money in customer:
+        #         customer_tot+=money
+        #     if customer_tot>richest:
+        #         richest=customer_tot
+        # return richest
         # Time complexity for approach 2 = O(n^2)
         # Space complexity for approach 2 = O(1)
         
+        # Approach 3
+        return max(sum(customer) for customer in accounts)

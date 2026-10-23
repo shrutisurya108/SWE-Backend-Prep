@@ -2,7 +2,7 @@
 # extract and print date, level, service (without brackets) and user_id as an int. Use split and slicing only.
 
 logline = "2026-10-19 15:37:02 ERROR [payment-service] Card declined for user_id=4821"
-log_details = logline.split(' ')
+log_details = logline.split()
 date_val=log_details[0]
 level=log_details[2]
 service=log_details[3][1:-1]

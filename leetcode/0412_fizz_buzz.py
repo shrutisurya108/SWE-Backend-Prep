@@ -12,3 +12,6 @@ class Solution:
             else:
                 answer.append(str(j))
         return answer
+
+# Time complexity = O(n)
+# Space complexity = O(n)
