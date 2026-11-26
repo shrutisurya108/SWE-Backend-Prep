@@ -1,6 +1,6 @@
 class Solution:
     def numIdenticalPairs(self, nums: list[int]) -> int:
-        
+
         # Approach 1: Brute force
         # num_good_pairs=0
         # for i in range(0,len(nums)-1):
@@ -12,9 +12,22 @@ class Solution:
         # Space complexity for approach 1: O(1)
 
         # Approach 2, optimizing on brute force to make time complexity O(n)
-        count=0
-        seen={}
+        # count=0
+        # seen={}
+        # for i in nums:
+        #     count = count+seen.get(i, 0)
+        #     seen[i]=seen.get(i,0)+1
+        # return count
+
+        # Approach 3, latest approach, Done on Day 03
+        # Time complexity = O(n), iterate n times to create a dict of number of occurences of each item,
+        # then at most n more iterations to count number of good pairs
+        # Space complexity = O(n) to maintain a dict
+        seen = {}
         for i in nums:
-            count = count+seen.get(i, 0)
-            seen[i]=seen.get(i,0)+1
+            seen[i] = seen.get(i, 0)+1
+        count = 0
+        for k, v in seen.items():
+            pairs_of_k = v*(v-1)//2
+            count += pairs_of_k
         return count

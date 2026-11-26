@@ -1,6 +1,6 @@
 class Solution:
     def numJewelsInStones(self, jewels: str, stones: str) -> int:
-        
+
         # Approach 1: Brute Force
         # count=0
         # for jewel in jewels:
@@ -20,7 +20,9 @@ class Solution:
         # Time complexity for approach 2: O(n.m), n=len(stones), m=len(jewels)
         # Space complexity for approach 2: O(1)
 
-        # Approach 3: Optimizing on brute force solutions
+        # Approach 3: Optimizing on brute force solutions, repeated same solution on Day 03
+        # Time complexity = O(n), O(n) to convert jewels to a set, and then n iterations to match each stone to jewel set
+        # Space complexity = O(m), m=size of jewel set
         jwl = set(jewels)
         count = sum(stone in jwl for stone in stones)
         return count
