@@ -116,9 +116,13 @@ class OrderService:
     def __init__(self, notifier):
         self.notifier = notifier
 
+    def make_service(self):
+        return self.notifier.send("Message from Order Services.")
+
 service1 = OrderService(EmailNotifier())
 service2 = OrderService(SMSNotifier())
 service3 = OrderService(SlackNotifier())
+assert service1.make_service() == "Email sent: Message from Order Services."
 
 # Please review the exercise 3 implementation. I have not completely understood how to implement this.
 

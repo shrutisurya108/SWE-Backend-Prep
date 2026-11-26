@@ -4,7 +4,7 @@ class ParkingSystem:
         self.big = big
         self.medium = medium
         self.small = small
-        
+
     def addCar(self, carType: int) -> bool:
         if carType == 1:
             if self.big > 0:
