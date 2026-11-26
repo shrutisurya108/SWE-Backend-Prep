@@ -4,9 +4,9 @@
 # keep a history list of ("deposit", 500) tuples (watch the class-attribute trap!); __repr__.
 # Add a @classmethod from_dollars(owner, dollars: str) that converts "12.34" to 1234 cents without float (hint: decimal.Decimal, or split on ".").
 class BankAccount:
-    def __init__(self, user_id, balance, history=None):
-        self.user_id = user_id
-        self.balance = balance
+    def __init__(self, owner, balance=0, history=None):
+        self.owner = owner
+        self._balance = balance
         if history is None:
             self.history = []
 
@@ -14,63 +14,72 @@ class BankAccount:
     def balance(self):
         return self._balance
 
-    @balance.setter
-    def balance(self, cents):
-        self._balance = cents
-
     def deposit(self, cents):
         if cents < 0:
             raise ValueError("Non-positive amount for deposit!")
-        self.balance += cents
+        self._balance += cents
         self.history.append(("deposit", cents))
 
     def withdraw(self, cents):
         if cents > self._balance:
             raise ValueError("Insufficient funds!")
-        self.balance -= cents
+        self._balance -= cents
         self.history.append(("withdraw", cents))
 
     def __repr__(self):
-        return f"BankAccount(user_id: {self.user_id}, balance: {self.balance}, history: {self.history})"
+        return f"{type(self).__name__}(owner: {self.owner}, balance: {self.balance}, history: {self.history})"
 
     @classmethod
-    def from_dollars(cls, user_id, dollars: str):
-        cents = (int("".join(dollars.split('.'))))
-        return cls(user_id, cents)
+    def from_dollars(cls, owner, dollars: str):
+        if '.' not in dollars:
+            cents = int(dollars)*100
+        else:
+            cents = (int("".join(dollars.split('.'))))
+        return cls(owner, cents)
 
 a = BankAccount(1, 100)
-assert(repr(a)) == "BankAccount(user_id: 1, balance: 100, history: [])"
+assert(repr(a)) == "BankAccount(owner: 1, balance: 100, history: [])"
 a.deposit(200)
-assert(repr(a)) == "BankAccount(user_id: 1, balance: 300, history: [('deposit', 200)])"
+assert(repr(a)) == "BankAccount(owner: 1, balance: 300, history: [('deposit', 200)])"
 a.withdraw(150)
-assert(repr(a)) == "BankAccount(user_id: 1, balance: 150, history: [('deposit', 200), ('withdraw', 150)])"
+assert(repr(a)) == "BankAccount(owner: 1, balance: 150, history: [('deposit', 200), ('withdraw', 150)])"
 # a.withdraw(200) # Checked their Value error, showing correctly
 # a.deposit(-2)
 b = BankAccount.from_dollars(2, "20.00")
-assert(repr(b)) == "BankAccount(user_id: 2, balance: 2000, history: [])"
+assert(repr(b)) == "BankAccount(owner: 2, balance: 2000, history: [])"
 
 # 2
 # Money as a frozen dataclass with cents and currency;
 # implement __add__ with a currency check. Show that two equal Money objects deduplicate in a set.
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 @dataclass(frozen=True)
 class Money:
     cents: int
-    currency: str = '$'
+    currency: str
 
     def __add__(self, new_money):
-        if new_money.currency != '$':
-            print("New amount not in $!")
+        if new_money.currency != self.currency:
+            raise ValueError("Currency does not match!")
         else:
-            return(Money(self.cents+new_money.cents))
+            return(Money(self.cents+new_money.cents, self.currency))
 
 m1 = Money(100, '$')
 m2 = Money(200, '$')
 m3 = m1+m2
+assert m3 == Money(300, '$')
 assert(m3.cents) == 300
 m4 = Money(100, 'Euro')
-# m5 = m1+m4              # Confirmed that it prints New amount not in $!
+# m5 = m1+m4              # Confirmed that it prints Currency does not match!
 
+money_set = set()
+assert (len(money_set)) == 0
+money1 = Money(40, '$')
+money_set.add(money1)
+assert (len(money_set)) == 1
+money2 = Money(40, '$')
+money_set.add(money2)
+assert len(money_set) == 1
+# this shows that 2 objects with exactly same attributes are treated as same/equal, and deduplicated when both added to a set
 
 
 # 3
