@@ -8,7 +8,7 @@ class OrderedStream:
         self.current = 0
 
     def insert(self, idKey: int, value: str) -> list[str]:
-        # Time complexity for insert = O(n) in worst case, n operations to iterate stream_list of size n
+        # Time complexity for insert = O(n), n operations to iterate stream_list of size n
         # Space complexity for insert = O(1), no extra space needed, return_list is expected output
         indx = idKey-1
         self.stream_list[indx] = value
@@ -28,7 +28,7 @@ class OrderedStream:
 
 # # Approach 1
 #     def __init__(self, n: int):
-#         # Time complexity for init operation = O(1)
+#         # Time complexity for init operation = O(n) for the stream_list
 #         # Space complexity for init = O(n) for the stream_list
 #         self.n = n
 #         self.stream_list = [None] * self.n

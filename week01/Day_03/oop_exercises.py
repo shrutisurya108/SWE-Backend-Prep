@@ -124,7 +124,7 @@ service2 = OrderService(SMSNotifier())
 service3 = OrderService(SlackNotifier())
 assert service1.make_service() == "Email sent: Message from Order Services."
 
-# Please review the exercise 3 implementation. I have not completely understood how to implement this.
+# Please review the exercise 3 implementation.
 
 
 # 4
@@ -135,6 +135,78 @@ assert service1.make_service() == "Email sent: Message from Order Services."
 # Resize to double the buckets when len / buckets > 0.75, re-inserting every pair
 # Bucket index: hash(key) % len(self.buckets)
 # In a comment: time complexity of get on average and worst case, and why resizing is amortized O(1)
+class HashMap:
+    def __init__(self):
+        self.total_size = 8
+        self.buckets = [[] for _ in range(self.total_size)]
+        self.hashmap_length = 0
+
+    def load_factor(self):
+        return self.hashmap_length / self.total_size
+
+    def resize(self):
+        self.total_size *= 2
+        self.new_buckets = [[] for _ in range(self.total_size)]
+        for i in self.buckets:
+            if i != []:
+                new_hash_index = hash(i[0]) % self.total_size
+                self.new_buckets[new_hash_index] = i
+        self.buckets = self.new_buckets
+
+    def put(self, key, value):
+        bucket_index = hash(key) % self.total_size
+        if self.buckets[bucket_index] == []:
+            self.buckets[bucket_index].append(key)
+            self.buckets[bucket_index].append(value)
+            self.hashmap_length += 1
+        else:
+            if self.buckets[bucket_index][0] == key:
+                self.buckets[bucket_index][1] = value
+            else:
+                #this should handle hash collision
+                #self.hashmap_length+=1
+                pass
+
+        if self.load_factor > 0.75:
+            self.resize()
+
+    def get(self, key):
+        return self.__getitem__(key)
+
+    def remove(self, key):
+        bucket_index = hash(key) % self.total_size
+        if self.buckets[bucket_index] == []:
+            raise KeyError("Key is missing!")
+        else:
+            if self.buckets[bucket_index][0] == key:
+                self.buckets[bucket_index] = []
+                self.hashmap_length -= 1
+            else:
+                raise KeyError("Key is missing!")
+
+    def __len__(self):
+        return self.hashmap_length
+
+    def __contains__(self, key):
+        bucket_index = hash(key) % self.total_size
+        if self.buckets[bucket_index] != [] and self.buckets[bucket_index][0] == key:
+            return True
+        else:
+            return False
+
+    def __getitem__(self, key):
+        bucket_index = hash(key) % self.total_size
+        if self.buckets[bucket_index] != [] and self.buckets[bucket_index][0] == key:
+            return self.buckets[bucket_index][1]
+        raise KeyError("Key is missing!")
+
+
+    def __setitem__(self, key, value):
+        bucket_index = hash(key) % self.total_size
+        if self.buckets[bucket_index] != [] and self.buckets[bucket_index][0] == key:
+            self.buckets[bucket_index][1] = value
+        else:
+            raise KeyError("Key is missing!")
 
 
 
@@ -187,7 +259,9 @@ assert (c2.items) == []
 
 
 # 3. In Two Sum, why check for the complement before inserting the current number?
+
 # 4. Group Anagrams: complexity with the sorted-string key vs the count-tuple key? Why must the count key be a tuple?
+
 # 5. Why is Top K Frequent's bucket sort O(n)? What makes it possible here when general sorting can't beat O(n log n)?
 
 
@@ -212,7 +286,7 @@ shopper2.add_item_to_cart("Jackets")
 
 
 # 7. When would you use @classmethod vs @staticmethod? Give a real example of each.
-# We should use @classmethod when the functions need to do something as the time of consructor initialization.
+# We should use @classmethod when the functions need to do something as the time of constructor initialization.
 # We should use static method when the function does not depend on any class or instance variable at all,
 # but should remain as a part of the class only for the logic.
 
