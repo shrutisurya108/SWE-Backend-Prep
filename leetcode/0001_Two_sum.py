@@ -3,7 +3,7 @@ class Solution:
     def twoSum(self, nums: list[int], target: int) -> list[int]:
         # Approach 1: Brute Force
         # Time complexity = O(n^2) (The i-loop runs for n times and j-loop runs n-1 times)
-        # Space complexity = O(n) (worst case, if all elements are included in the final result list)
+        # Space complexity = O(1) (no extra space used)
 
         # result = []
         # for i in range(len(nums)):
@@ -12,7 +12,7 @@ class Solution:
         #             result.append(i)
         #             result.append(j)
         # return result
-        
+
         # Approach 2: Trying to optimize on brute force
         # Time complexity = O(n)
         # Space complexity = O(n) (worst case, if all elements have to be added in seen)

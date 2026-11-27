@@ -109,7 +109,7 @@ def notify_all(notifiers, message):
     for channel in notifiers:
         result.append(channel.send(message))
     return result
-[]
+
 assert(notify_all([EmailNotifier(), SMSNotifier()], "Limit reached!")) == ["Email sent: Limit reached!", "SMS sent: Limit reached!"]
 
 class OrderService:
@@ -145,6 +145,10 @@ class HashMap:
         return self.hashmap_length / self.total_size
 
     def resize(self):
+        # Resizing is amortized O(1) because it is triggered only when load_factor>0.75,
+        # on avg every put/set operation does not trigger resizing
+        # When it is triggred, a put operation can take O(n) times,
+        # which happens once every n insertions (approx), thus giving amortized O(1)
         self.total_size *= 2
         self.new_buckets = [[] for _ in range(self.total_size)]
         for i in self.buckets:
@@ -171,6 +175,7 @@ class HashMap:
             self.resize()
 
     def get(self, key):
+        # Time complexity for get is O(1) on avg case
         return self.__getitem__(key)
 
     def remove(self, key):
@@ -238,14 +243,15 @@ assert (c2.items) == []
 # 1. Walk through what happens inside a dict when you do d["cat"] = 7, then d["cat"]. What's a collision, and how is it handled?
 # Answer: When we do d["cat"] = 7, python calculates a hash of the key cat to find a suitable bucket/address
 #                              where to store the associated value 7 and stores the value 7 there.
+#                              If that key is not present there, it puts the new key-value pair in that bucket.
 # When we do d["cat"], Python calculates the hash value of key "cat", gets the address to look up
-#                               and returns the value present at that address.
+#                               and returns the value present at that address. If that key is not present there, it raises a keyerror.
 # A collision happens when more two or more keys have the same output from hash function, or the hash value,
 #                               so the values all get same address/bucket
-# In case of collision, it can be handled using open-chaining, in which case, all the items with same hash value are stored
+# In case of collision, it can be handled using chaining, in which case, all the items with same hash value are stored
 # in a list at the same address and would be traversed serially (it would be a smaller list compared to the original number of items,
 #                                 so lookup would be faster but not O(1))
-# Another method is closed chaining, in which Python uses internal algorithms to find the next available spot for the item with same hash value.
+# Another method is open addressing, in which Python uses internal algorithms to find the next available spot for the item with same hash value.
 
 
 # 2. Why is dict insert O(1) amortized, and what's the worst case?
@@ -259,10 +265,28 @@ assert (c2.items) == []
 
 
 # 3. In Two Sum, why check for the complement before inserting the current number?
+# If there are 2 same numbers in the list and target is double of this number, if we insert the current number to the list before
+# checking its complement, the program will look at the same number and think that the needed complement is present.
+# Eg: nums_list = [3,3] and target=6
+# Pick the first 3, if we add it to seen first, then look for the needed complement 3, it will find 3 in seen dict and return the same index,
+# To avoid this, we first check for complement in the seen_dict, then add the current value to seen_dict
 
 # 4. Group Anagrams: complexity with the sorted-string key vs the count-tuple key? Why must the count key be a tuple?
+# In sorted string key (canonical key), the complexity is O(nk log k), because loop runs for n words,
+# and each word sorting takes O(k log k) time assuming k is avg length of the word.
+# The space complexity is O(n) as the dict may have n items.
+# When we use count-tuple key, the loop runs for n words, and for each word, the inner loop runs k times to make the count-tuple,
+# So, total time complexity is O(nk). The space complexity is O(n) as the dict may have at most n items, and each count-tuple key is of length 26, so 26n total tuples.
+# The count key must be a tuple because we need to use it as a dict key, so it must be hashable.
+# Tuples are immutable and therefore hashable, allowing them to be used as dict keys.
 
 # 5. Why is Top K Frequent's bucket sort O(n)? What makes it possible here when general sorting can't beat O(n log n)?
+# A general sorting algorithms has time complexity O(n log n)
+# In bucket sort, we make use of the fact that an element in n-sized array can have a max frequency of n.
+# So we can create a trade-off with space to create n buckets, and put the elements in the bucket no corresponding with its frequency.
+# Since we want top-k, we can iterate the buckets in reverse to get first k non-empty buckets which are the top-k most frequent elements.
+# Making a count dict of elements takes O(n) times, putting the elements in buckets according to the frequenct takes O(n) time,
+# Then traversing the bucket will take at most O(n) time, so total time complexity = O(n)
 
 
 # 6.  Difference between a class attribute and an instance attribute? Show the bug that mixing them up causes.
@@ -294,11 +318,13 @@ shopper2.add_item_to_cart("Jackets")
 
 
 # 8. What's the difference between __repr__ and __str__? What happens to __hash__ when you define __eq__?
-# __repr__ gives a more developer friendly representation of any object, while __str__ gives a more user friendly view
-# when we define __eq__ , Python disables the __hash__ to avoid collision, and we have to define __hash__ too.
+# __repr__ gives a more developer friendly representation of any object, while __str__ gives a more user friendly view.
+# when we define __eq__ , Python disables the __hash__ to avoid collision, and we have to define __hash__ explicitly too, using same fields as __eq__.
 
 # 9. Composition vs inheritance: which does OrderService(notifier) use, and why is it easier to test?
-# Not clear enough to answer this question.
+# Inheritance gives a 'is-a' relation between class, and composition gives 'has-a' relation.
+# OrderService(notifier) uses composition, it is easier to test because we can create a fake notifier object for testing purposes.
+# (please review this last line)
 
 # 10. Catch-up drills C1–C4: your complexities.
 # Present in same directory/Day03_Submission.md

@@ -28,8 +28,9 @@ for i in range(n):
             print(i, j, k)
 
 The outermost loop runs n times
-The inner loop runs n+(n-1)+(n-2)+....1 = n(n-1)/2 times
-The innermost loop runs (10*(n(n-1)/2)) times
+The inner loop runs a max of n times for each iteration of i loop.
+The innermost loop runs (10) times for each iteration of j loop.
+Overall iterations = n* n *10
 Time complexity of C4 = O(n^2)
 
 # Leetcode 242

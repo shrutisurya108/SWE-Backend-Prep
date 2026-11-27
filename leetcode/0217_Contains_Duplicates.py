@@ -18,4 +18,4 @@ class Solution:
         # nums_set = set(nums)
         # return False if len(nums_set) == len(nums) else True
 
-        # Approach 2 will exit earlier
+        # Approach 1 will exit earlier, cannot answer why (please review this answer)
